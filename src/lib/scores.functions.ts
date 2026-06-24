@@ -12,7 +12,7 @@ const submitSchema = z.object({
 
 export const submitScore = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => submitSchema.parse(data))
+  .validator((data: unknown) => submitSchema.parse(data))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("scores").insert({
       user_id: context.userId,
