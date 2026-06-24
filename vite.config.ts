@@ -41,4 +41,7 @@ export default defineConfig({
     }),
     react(),
   ],
+  preview: {
+    allowedHosts: ["production-puzzle-mastermind.tyzo.nodeops.app"],
+  },
 });
