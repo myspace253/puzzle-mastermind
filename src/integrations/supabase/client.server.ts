@@ -48,6 +48,7 @@ function createSupabaseAdminClient() {
   const realtimeUrl = SUPABASE_URL.replace('https://', 'wss://').replace('http://', 'ws://');
   const realtime = new RealtimeClient(realtimeUrl, {
     transport: ws,
+    apikey: SUPABASE_SERVICE_ROLE_KEY,
   });
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {

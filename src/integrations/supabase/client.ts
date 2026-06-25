@@ -48,6 +48,7 @@ function createSupabaseClient() {
   const realtimeUrl = SUPABASE_URL.replace('https://', 'wss://').replace('http://', 'ws://');
   const realtime = new RealtimeClient(realtimeUrl, {
     transport: ws,
+    apikey: SUPABASE_PUBLISHABLE_KEY,
   });
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
