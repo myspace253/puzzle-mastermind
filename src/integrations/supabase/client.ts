@@ -5,7 +5,10 @@ import type { Database } from './types';
 // Import ws globally for Node.js compatibility with Supabase Realtime
 if (typeof window === 'undefined') {
   try {
-    require('ws');
+    const ws = require('ws');
+    if (!globalThis.WebSocket) {
+      (globalThis as any).WebSocket = ws;
+    }
   } catch (e) {
     // ws not available, Realtime subscriptions may not work
   }

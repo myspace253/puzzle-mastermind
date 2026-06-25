@@ -5,6 +5,17 @@ import { createClient } from '@supabase/supabase-js'
 import type { Database } from './types'
 
 
+// Import ws globally for Node.js compatibility with Supabase Realtime
+if (typeof window === 'undefined') {
+  try {
+    const ws = require('ws');
+    if (!globalThis.WebSocket) {
+      (globalThis as any).WebSocket = ws;
+    }
+  } catch (e) {
+    // ws not available, Realtime subscriptions may not work
+  }
+}
 
 function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith('sb_publishable_') || value.startsWith('sb_secret_');
