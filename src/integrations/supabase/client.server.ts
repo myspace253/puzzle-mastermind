@@ -2,9 +2,15 @@
 // Server-side Supabase client with service role key - bypasses RLS.
 // Use this for admin operations in server functions and server routes only.
 // For user-authenticated queries (with RLS), use the auth middleware instead.
-import { createClient, RealtimeClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
-import ws from 'ws';
+
+// Import ws globally for Node.js compatibility with Supabase Realtime
+try {
+  require('ws');
+} catch (e) {
+  // ws not available, Realtime subscriptions may not work
+}
 
 function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith('sb_publishable_') || value.startsWith('sb_secret_');
@@ -44,13 +50,6 @@ function createSupabaseAdminClient() {
     throw new Error(message);
   }
 
-  // Create a Realtime instance with ws transport for Node.js support
-  const realtimeUrl = SUPABASE_URL.replace('https://', 'wss://').replace('http://', 'ws://');
-  const realtime = new RealtimeClient(realtimeUrl, {
-    transport: ws,
-    apikey: SUPABASE_SERVICE_ROLE_KEY,
-  });
-
   return createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     global: {
       fetch: createSupabaseFetch(SUPABASE_SERVICE_ROLE_KEY),
@@ -60,7 +59,6 @@ function createSupabaseAdminClient() {
       persistSession: false,
       autoRefreshToken: false,
     },
-    realtime,
   });
 }
 
